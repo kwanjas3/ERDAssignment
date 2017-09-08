@@ -1,0 +1,269 @@
+
+
+
+DBS201 Assignment
+
+
+
+
+
+
+
+
+Joel Kwan
+Jason Kwan
+Andrew Faux
+Mark Nekrasov
+2017/08/04
+
+ 
+Normalization
+User View 1: Invoice Statement
+UNF: 
+INVOICE[InvNum,InvDate, CustID, CustName, WT, cPostalCode, Addr, (EquipmentID,EquipmentUsed), (ServCode, ServDesc, HourlyCharge, WorkDur)]
+1NF: 
+INVOICE_EQUIPMENT[InvNum, EquipmentID, Equipment Used] 
+INVOICE_SERVICE[InvNum,ServCode, InvDate, CustID, CustName, WT, cPostalCode, cAddr, EquipmentUsed, ServDesc, HourlyCharge, WorkDur]
+2NF: 
+INVOICE[InvNum, InvDate, CustID, CustName, WT, cPostalCode, cAddr,]
+SERVICE[ServCode, ServDesc, HourlyCharge]
+EQUIPMENT[EquipmentID, EquipmentUsed]
+INVOICE_EQUIPMENT[InvNum, EquipmentID]
+INVOICE_SERVICE[InvNum,ServCode, WorkDur]
+3NF: 
+INVOICE[InvNum, InvDate, WorkT(FK), CustID(FK)]
+CUSTOMER[CustID, CustName, CustPostal(FK)]
+SERVICE[ServCode, ServDesc, HourlyCharge]
+EQUIPMENT[EquipmentID, EquipmentUsed]
+INVOICE_EQUIPMENT[InvNum(FK), EquipmentID(FK), EquipmentUsed]
+INVOICE_SERVICE[InvNum(FK), ServCode(FK),  WorkDur]
+
+User View 2: Employee Reports
+UNF: 
+EMPLOYEE[EmpId, TeamId, TeamDesc, (Position, Name, OhipNo, PhoneNo, StartDate), (SkillDesc)]
+
+
+1NF: 
+Employee [EmpId, Skill_ID,  TeamId, TeamDesc, Position, Name, OhipNo, PhoneNo, StartDate, SkillDesc]
+2NF:
+EMPLOYEE[EmpID, TeamID, TeamDesc, Name, Position, OhipNo, PhoneNo, StartDate]
+SKILLS[Skill_ID, SkillDesc]
+EMPLOYEE_SKILL[EmpID, Skill_ID]
+3NF: 
+EMPLOYEE[EmpID, TeamId(FK), Name, Position, OhipNo, PhoneNo, Skill_ID (FK), StartDate]
+SKILLS[Skill_ID, Skill Desc]
+EMPLOYEE_SKILL[EmpId(FK), Skill_ID(FK)]
+TEAM[TeamID, TeamDesc]
+
+User View 3: Product Sales Report
+UNF: 
+SALES[InvoiceId, InvoiceDate, AssistID, AssistName, CustNo(ProdClass, ProdId, Product, Qty)]
+1NF: 
+SALES_PRODUCT[InvoiceId, ProdId, InvoiceDate, AssistID, AssistName, CustNo, ProdClass, Product,  Qty]
+2NF: 
+SALES[InvoiceId, InvoiceDate, AssistID, AssistName, CustNo]
+PRODUCT[ProdId, ProdClass, Product]
+SALES_PRODUCT[InvoiceId, ProdId, Qty]
+
+3NF: 
+SALES[InvoiceId, InvoiceDate, CustNo(FK), AssistID(FK)]
+PRODUCT[ProdId, ProdClass, ProductDesc]
+SALES_PRODUCT[InvoiceId(FK), ProdId(FK), Qty]
+SALESASSIST[AssistID, AssistName]
+
+User View 4: Product Report
+UNF: 
+PRODUCT[ProdClass, ProdClassification, Markup, (ProdId, ProdDesc, Cost)]
+1NF:  
+PRODUCT[ProdClass, ProdClassification, Markup]
+PRODUCT_PRODID[ProdClass, ProdID, ProdDesc, Cost]
+2NF:
+ PRODUCT[ProdClass, ProdClassification, Markup]
+PRODUCT_PRODID[ProdClass, ProdID]
+PROD_DETAIL[ProdId, ProdDesc, Cost]
+3NF:
+ PRODUCT[ProdClass, ProdClassification, Markup]
+ PRODUCT_PRODID[ProdClass, ProdID]
+ PRODUCT_DETAIL[ProdId, ProdDesc, Cost]
+
+User View 5: Inventory
+UNF: 
+INVENTORY[ProdId, ProdDesc, AisleNum, Supplier]
+1NF: 
+INVENTORY[ProdId, ProdDesc, AisleNum, Supplier]
+
+2NF: 
+INVENTORY[ProdId, ProdDesc, AisleNum, Supplier]
+3NF: 
+INVENTORY[ProdId, ProdDesc, AisleNum, Supplier]
+
+Final Entity Set
+TEAM[TeamID, TeamDesc]
+SKILLS[SkillID(int), Skill Desc]
+EMPLOYEE[EmpID, TeamID(FK), Name, Position, OhipNo, PhoneNo,  StartDate]
+EMPLOYEE_SKILL[EmpID(FK), SkillID(FK)]
+EQUIPMENT[EquipmentID, EquipmentUsed]
+INVOICE[InvNum, InvDate, WorkT(FK), CustID(FK), EmpID(FK)]
+CUSTOMER[CustID, CustName, CustPostal, CustCity, CustAddr ]
+PRODUCT_CLASS[ProdClass, ProdClassification, Markup]
+PRODUCT[ProdID(PK), ProdClass(FK) ProdDesc, ProdCost, Inventory, Supplier, Aisle]
+SERVICE[ServCode, ServDesc, HourlyCharge]
+SALES_PRODUCT[InvNum(FK), ProdId, Qty]
+INVOICE_EQUIPMENT[InvNum(FK), EquipmentID (FK)]
+INVOICE_SERVICE[InvNum(FK), ServCode(FK), WorkDur]
+
+ 
+Insert Statements
+Insert into team values (0, 'Sales')
+Insert into team values (1, 'General Contracting);
+Insert into team values (2, 'Pruning and Planting');
+Insert into team values (3, 'General Maintenance'); 
+
+Insert into skills values (1, 'Electrical');
+Insert into skills values (2, 'Plumbing');
+Insert into skills values (3, 'General Contractor');
+Insert into skills values (4, 'Irrigation');
+Insert into skills values (5, 'Lawn Maintenance');
+Insert into skills values (6, 'Pruning');
+Insert into skills values (7, 'Fertilizing')
+Insert into skills values (8, '{"A"} License);
+Insert into skills values (9, 'Sales');
+
+Insert into employee values (120, 1, 'Wendy Ames', 'Supervisor', '219032002', 9053381234, '1998-01-01');
+Insert into employee values (122, 1, 'Terry Wilson', 'Lawn Care', '34111991', '9053381234', '1999-06-30');
+Insert into employee values (121, 2, 'Mary Wells', 'Lawn Care', '325443001', '4164584562', '1998-06-30');
+Insert into employee values (123, 2, 'Peter Wong', 'Supervisor', '54222991', '4169324533', '2000-06-30');
+Insert into employee values (124, 3, 'Carrie Fisher', 'Lawn Care', '43524532', '9053455366', '1998-08-23');
+Insert into employee values (126, 3, 'Brad Phillips', 'Supervisor', '32543555', '4164356599', '2001-03-03');
+Insert into employee values (155, 0, 'Gordan Brown', 'Sales', 0, 0, 0);
+Insert into employee values (158, 0, 'Susan Gills', 'Sales', '0', '0, 0);
+
+EMPLOYEE_SKILL[EmpID(FK), SkillID(FK)]
+Insert into Employee_skill values (120, 1);
+Insert into Employee_skill values (120, 2);
+Insert into Employee_skill values (120, 3);
+Insert into Employee_skill values (122, 4);
+Insert into Employee_skill values (122, 5);
+Insert into Employee_skill values (121, 6);
+Insert into Employee_skill values (121, 4);
+Insert into Employee_skill values (121, 7);
+Insert into Employee_skill values (122, 8);
+Insert into Employee_skill values (122, 1);
+Insert into Employee_skill values (122, 3);
+Insert into Employee_skill values (124, 6);
+Insert into Employee_skill values (124, 5);
+Insert into Employee_skill values (126, 4);
+Insert into Employee_skill values (126, 2);
+Insert into Employee_skill values (126, 1);
+Insert into Employee_skill values (155, 9);
+Insert into Employee_skill values (158, 9);
+
+Insert into CUSTOMER values (56, 'John Adams', M2S4S3, 'Oakville', '234 King St.');
+Insert into CUSTOMER values (34, 'Ashley Riley', M4T4R7,'Oakville','156 Avindale Cresc'
+Insert into CUSTOMER values (7,'John Doe', NULL,NULL,NULL);
+
+Insert into Equipment values (1, '20 hp John Deer tractor/mower);
+Insert into equipment values(2, '2hp Johnson grass trimmer');
+Insert into equipment values(3, '10 tree pruning shears');
+Insert into equipment values(4, 'Haggmann garden-tiller');
+
+INVOICE_EQUIPMENT[InvNum(FK), EquipmentID (FK)]
+INSERT INTO INVOICE_EQUIPMENT VALUES (1355,1);
+INSERT INTO INVOICE_EQUIPMENT VALUES (1355,3);
+INSERT INTO INVOICE_EQUIPMENT VALUES (1355,2);
+INSERT INTO INVOICE_EQUIPMENT VALUES (1412, 1);
+INSERT INTO INVOICE_EQUIPMENT VALUES(1412, 2);
+INSERT INTO INVOICE_EQUIPMENT VALUES (1412, 4);
+
+Insert into invoice VALUES (1355, '2017-06-05', 2, 56, NULL);
+Insert into invoice  VALUES (1412, '2017-06-19', 3, 34, NULL);
+Insert into invoice  VALUES (1356, '2002-07-05', 0, 56, 155);
+Insert into invoice  VALUES (1367, '2002-07-06', 0, 7, 158);
+Insert into invoice  VALUES (1401, '2002-07-06', 0, 34, 155);
+Insert into invoice  VALUES(1405, '2002-07-07', 0, 56, 158);
+
+INSERT INTO SERVICE VALUES ('LC','Lawn Cutting',25.00);
+INSERT INTO SERVICE VALUES ('GW','Garden Weeding', 25.00);
+INSERT INTO SERVICE VALUES ('GP','Garden Planting',30.00);
+INSERT INTO SERVICE VALUES ('GF','Garden Fertilizing', 10.00);
+INSERT INTO SERVICE VALUES ('LW', 'Lawn Weeding', 35.00);
+INSERT INTO SERVICE VALUES ('LF', 'Lawn Fertilizing', 15.00);
+INSERT INTO SERVICE VALUES ('TG', 'Tree Pruning', 45.00);
+
+INVOICE_SERVICE[InvNum(FK), ServCode(FK), WorkDur]
+INSERT INTO INVOICE_SERVICE VALUES (1355,'LC', 0.75);
+INSERT INTO INVOICE_SERVICE VALUES (1355,'LW', 1.15);
+INSERT INTO INVOICE_SERVICE VALUES (1355,'LF', 0.25);
+INSERT INTO INVOICE_SERVICE VALUES (1355,'TG', 0.50);
+INSERT INTO INVOICE_SERVICE VALUES (1412,'LC', 0.75);
+INSERT INTO INVOICE_SERVICE VALUES (1412,'GW', 1.15);
+INSERT INTO INVOICE_SERVICE VALUES (1412,'GP', 0.25);
+INSERT INTO INVOICE_SERVICE VALUES (1412,'GF', 0.50);
+
+
+
+
+
+ProductClass
+INSERT INTO PRODUCTCLASS values ('GT','Garden Tools', 30);
+INSERT INTO PRODUCTCLASS values ('SB','Shrubs', 50);
+INSERT INTO PRODUCTCLASS values ('FT','Fertilizers', 25);
+INSERT INTO PRODUCTCLASS values ('SP','Sprinklers', 40);
+
+PRODUCT
+INSERT INTO PRODUCT VALUES (10, 'GT', '6 foot garden rake', 9.23,5 , 'Sheffield-Gander inc', 1);
+INSERT INTO PRODUCT VALUES (20, 'GT', '7 foot leaf rake', 7.69 ,5 , 'Sheffield-Gander inc', 1);
+INSERT INTO PRODUCT VALUES (30, 'GT', 'Round Mouth Shovel', 7.96,4, 'Husky Inc', 1);
+INSERT INTO PRODUCT VALUES (40, 'GT', 'Flat-nosed Shovel', 6.15, 2 ,'Husky Inc', 1);
+INSERT INTO PRODUCT VALUES (50, 'GT', 'Garden pitch-fork', 5.38, 6 ,'Husky Inc', 1);
+INSERT INTO PRODUCT VALUES (60, 'GT', '8 inch hand shears',  11.54, 9 ,'Sheffield-Gander inc', 2);
+INSERT INTO PRODUCT VALUES (70, 'GT', '12 inch trimming shears',14.62, 10 ,'Sheffield;-Gander inc', 2);
+INSERT INTO PRODUCT VALUES (80, 'GT', '10 inch tamper', 10.77, 3,'Husky inc', 2);
+INSERT INTO PRODUCT VALUES (90, 'SB', 'Cedar Sapling ', 20.00, 34 ,'Northwoord Farms inc', 5);
+INSERT INTO PRODUCT VALUES (100, 'SB', 'Golden Cedar Sapling', 23.33, 23 ,'Northwoord Farms inc', 5);
+INSERT INTO PRODUCT VALUES (110, 'SB', 'Mulberry sapling', 10.00, 12,'Sherwood Nursers', 4);
+INSERT INTO PRODUCT VALUES (120, 'SB', 'Juniper sapling', 16.67, 15 ,'Northwoord Farms inc', 4);
+INSERT INTO PRODUCT VALUES (130, 'FT', 'Premium lawn fertilizer', 12.00, 4 ,'Sherwood Nursers', 6);
+INSERT INTO PRODUCT VALUES (140, 'FT', 'General grade lawn fertilizer', 8.00, 12 ,'Sherwood Nursers', 6);
+INSERT INTO PRODUCT VALUES (150, 'FT', 'Premium garden fertilizer', 14.40, 14 ,'Sherwood Nursers', 6);
+INSERT INTO PRODUCT VALUES (160, 'FT', 'General grade garden fertilizer', 9.60, 12 ,'Sherwood Nursers', 6);
+INSERT INTO PRODUCT VALUES (170, 'SP', '120 foot watering hose', 17.86, 9 ,'Diemar Garden Center', 3);
+INSERT INTO PRODUCT VALUES (180, 'SP', '12 inch aluminum sprinkler', 10.71,5 ,'Diemar Garden Center', 3);
+INSERT INTO PRODUCT VALUES (190, 'SP', 'rotating sprinkler jet', 13.57, 4 ,'Diemar Garden Center', 3);
+ 
+SALES_PRODUCT[InvNum(FK), ProdId, Qty]
+INSERT INTO SALES_PRODUCT values (1356,10,1);
+INSERT INTO SALES_PRODUCT values (1356,40,1);
+INSERT INTO SALES_PRODUCT values (1356,140,3);
+INSERT INTO SALES_PRODUCT values (1367,100,5);
+INSERT INTO SALES_PRODUCT values (1367,110,2);
+INSERT INTO SALES_PRODUCT values (1367,50,1);
+INSERT INTO SALES_PRODUCT values (1367,140,2);
+INSERT INTO SALES_PRODUCT values (1401,170,3);
+INSERT INTO SALES_PRODUCT values (1401,190,3);
+INSERT INTO SALES_PRODUCT values (1401,50,1);
+
+TO FIX
+ SERVICE , DECIMAL NOT INTEGER
+
+USRVIEW1
+select i.invnum, i.invdate, t.teamID, e.equipmentused, c.custid || '-' || c.custname as Customer,  rtrim (c.custaddr ) || ' ' || rtrim (c.custcity) || ' ' ||rtrim (c.custpostal) as ADDRESS, s.servCode, s.servdesc, s.hourlycharge, invser.workdur, invser.workdur * s.hourlycharge as Charge
+from invoice i, team t, equipment e, customer c, service s, invoice_service invser, invoice_equipment ie
+where i.invnum = invser.invnum and invser.servcode = s.servcode and i.invnum = ie.invnum and ie.equipmentid = e.equipmentid and i.workt = t.teamid and i.custid = c.custid;
+ 
+
+
+USERVIEW 3
+set schema dr201ag15;
+ 
+ 
+create view prodsalesrepo as
+select p.prodclass as PRODCLASS, sp.prodid, sp.invnum, p.proddesc, 
+round(p.prodcost *(pc.markup+100)/100, 2) as Charge ,
+sp.quantity as QTY,
+i.invdate as Invoice_Date, e.empid || ' - ' || e.name as Sales_Assistant, i.custid as CustNo 
+  
+from sales_product sp, product p, productclass pc, invoice i, employee e 
+  
+where sp.prodid = p.prodid and pc.prodclass = p.prodclass and i.invnum =sp.invnum and e.empid = i.empid;
+Dr201a19 // XKFGZN
